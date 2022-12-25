@@ -1,6 +1,7 @@
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
+const withExportImages = require('next-export-optimize-images')
 
 // You might need to insert additional domains in script-src if you are using external services
 const ContentSecurityPolicy = `
@@ -52,7 +53,7 @@ const securityHeaders = [
   },
 ]
 
-module.exports = withBundleAnalyzer({
+const config = {
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'md', 'mdx'],
   eslint: {
@@ -84,4 +85,9 @@ module.exports = withBundleAnalyzer({
 
     return config
   },
-})
+}
+
+module.exports = (_phase, { defaultConfig }) => {
+  const plugins = [withBundleAnalyzer, withExportImages]
+  return plugins.reduce((acc, plugin) => plugin(acc), { ...defaultConfig, ...config })
+}
