@@ -1,0 +1,1 @@
+data/authors/default.md
